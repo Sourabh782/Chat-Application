@@ -52,6 +52,30 @@ const sendMessage = asyncHandler(async(req, res)=>{
     )
 })
 
+const getMessage = asyncHandler(async (req, res)=>{
+    const { id: receiverId } = req.params;
+    const senderId = req.user._id;
+
+    if(!receiverId || receiverId === ""){
+        throw new ApiError(404, "receiver Id not found");
+    }
+
+    const conversation = await Conversation.findOne({
+        particiants: {
+            $all: [senderId, receiverId]
+        }
+    }).populate("messages") // or can use pipeline
+
+    if(!conversation){
+        throw new ApiError(500, "something went wrong while fetching messages")
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, conversation.messages, "messages fetched")
+    )
+})
+
 export {
-    sendMessage
+    sendMessage,
+    getMessage
 }
