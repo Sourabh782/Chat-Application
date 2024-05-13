@@ -3,6 +3,7 @@ import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { Conversation } from "../models/conversation.model.js"
 import { Message } from "../models/message.model.js"
+import { getReceiverSockerId, io } from "../socket/socket.js"
 
 const sendMessage = asyncHandler(async(req, res)=>{
     const { message } = req.body;
@@ -45,6 +46,12 @@ const sendMessage = asyncHandler(async(req, res)=>{
 
     if(!updated){
         throw new ApiError(500, "something went wrong while sending message")
+    }
+
+    const receiverSocketId = getReceiverSockerId(receiverId);
+
+    if(receiverSocketId){
+        io.to(receiverSocketId).emit("newMessage", newMessage)
     }
     
     return res.status(200).json(
