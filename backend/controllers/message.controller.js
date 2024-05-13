@@ -48,7 +48,7 @@ const sendMessage = asyncHandler(async(req, res)=>{
     }
     
     return res.status(200).json(
-        new ApiResponse(200, updated, "message sent")
+        new ApiResponse(200, newMessage, "message sent")
     )
 })
 
@@ -67,7 +67,9 @@ const getMessage = asyncHandler(async (req, res)=>{
     }).populate("messages") // or can use pipeline
 
     if(!conversation){
-        throw new ApiError(500, "something went wrong while fetching messages")
+        return res.status(200).json(
+            new ApiResponse(200, [], "message found")
+        )
     }
 
     return res.status(200).json(

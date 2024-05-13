@@ -18,8 +18,11 @@ const Conversations = () => {
           lastIdx = {idx === Conversations.length-1}
        />
       ))}
+
+      {loading ? <span className='loading loading-spinner mx-auto'></span> : null}
     </div>
   )
 }
 
 export default Conversations
+

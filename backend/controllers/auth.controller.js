@@ -27,7 +27,7 @@ const loginUser = asyncHandler(async (req, res)=>{
     generateTokenAndSetCookie(user._id, res);
 
     return res.status(200).json(
-        new ApiResponse(200, user._id, "logged in successfully")
+        new ApiResponse(200, user, "logged in successfully")
     )
 })
 
