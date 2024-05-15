@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/apiResponse.js"
 import { Conversation } from "../models/conversation.model.js"
 import { Message } from "../models/message.model.js"
 import { getReceiverSockerId, io } from "../socket/socket.js"
+import { Chat } from "../models/chat.model.js"
 
 const sendMessage = asyncHandler(async(req, res)=>{
     const { message } = req.body;
@@ -23,6 +24,33 @@ const sendMessage = asyncHandler(async(req, res)=>{
     if(!conversation){
         conversation = await Conversation.create({
             particiants: [senderId, receiverId]
+        })
+
+        
+    }
+
+    let chat = await Chat.findOne({sender: req.user?._id})
+    // console.log(chat)
+    if(!chat){
+        chat = await Chat.create({
+            sender: req.user?._id
+        })
+    }
+
+    const present = await Chat.find({
+        $and: [
+            { sender: req.user._id },
+            { reveiver: receiverId }
+        ]
+    })
+
+    // console.log(present)
+
+    if(present.length == 0){
+        await Chat.findByIdAndUpdate(chat._id, {
+            $addToSet: {
+                receiver: receiverId
+            }
         })
     }
 
