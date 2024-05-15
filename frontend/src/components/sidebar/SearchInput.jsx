@@ -34,14 +34,15 @@ const SearchInput = () => {
     //   toast.error("No user found!")
     // }
 
-    console.log(search)
+    // console.log(search)
+
+    searchUser(search)
 
     if(users?.length === 0){
       toast.error("no user found")
     }
 
-    searchUser(search)
-    console.log(users);
+    // console.log(users);
     // setLoading(true)
     setSearch("")
   }
